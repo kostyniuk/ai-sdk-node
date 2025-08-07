@@ -20,22 +20,31 @@ app.use(
 
 // Serve the HTML file at root
 app.get("/", async (c) => {
-  const fs = await import('fs/promises');
-  const path = await import('path');
-  const { fileURLToPath } = await import('url');
+  // Check if we're in development (local) or production (Vercel)
+  const isDevelopment = process.env.NODE_ENV !== 'production';
   
-  try {
-    // Get the directory of the current module
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
+  if (isDevelopment) {
+    // In development, read and serve the HTML file
+    const fs = await import('fs/promises');
+    const path = await import('path');
+    const { fileURLToPath } = await import('url');
     
-    // Construct absolute path to the HTML file
-    const htmlPath = path.join(__dirname, '..', 'public', 'index.html');
-    const html = await fs.readFile(htmlPath, 'utf-8');
-    return c.html(html);
-  } catch (error) {
-    console.error('Error reading HTML file:', error);
-    return c.text('HTML file not found', 404);
+    try {
+      // Get the directory of the current module
+      const __filename = fileURLToPath(import.meta.url);
+      const __dirname = path.dirname(__filename);
+      
+      // Construct absolute path to the HTML file
+      const htmlPath = path.join(__dirname, '..', 'public', 'index.html');
+      const html = await fs.readFile(htmlPath, 'utf-8');
+      return c.html(html);
+    } catch (error) {
+      console.error('Error reading HTML file:', error);
+      return c.text('HTML file not found', 404);
+    }
+  } else {
+    // In production (Vercel), redirect to the static file
+    return c.redirect("/index.html");
   }
 });
 
