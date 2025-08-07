@@ -1,5 +1,7 @@
 # HTML Template Generator
 
+https://ai-sdk-node.vercel.app/
+
 A specialized web application that generates HTML templates using AI. Built with Hono, TypeScript, and Google's Gemini AI model. The application is designed to create HTML templates with 5 predefined variables: order_id, customer_id, quantity, order_date, and price.
 
 ## Features
