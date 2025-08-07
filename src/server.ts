@@ -21,10 +21,20 @@ app.use(
 // Serve the HTML file at root
 app.get("/", async (c) => {
   const fs = await import('fs/promises');
+  const path = await import('path');
+  const { fileURLToPath } = await import('url');
+  
   try {
-    const html = await fs.readFile('./public/index.html', 'utf-8');
+    // Get the directory of the current module
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    
+    // Construct absolute path to the HTML file
+    const htmlPath = path.join(__dirname, '..', 'public', 'index.html');
+    const html = await fs.readFile(htmlPath, 'utf-8');
     return c.html(html);
   } catch (error) {
+    console.error('Error reading HTML file:', error);
     return c.text('HTML file not found', 404);
   }
 });
